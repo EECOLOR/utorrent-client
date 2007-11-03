@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	xmlns:fly.flex.controls="fly.flex.controls.*"
+	xmlns:fly.uTorrent.ui.assets="fly.uTorrent.ui.assets.*"
+>
+<!--	width="100%" height="100%"-->
+	<mx:HBox width="100%" horizontalGap="2">
+		<mx:Spacer width="100%" />
+		<fly.uTorrent.ui.assets:MinimizeButton id="minimizeBtn" />
+		<fly.uTorrent.ui.assets:CloseButton id="closeBtn" />
+	</mx:HBox>
+	<mx:HRule width="100%" />
+	<mx:HBox width="100%" horizontalGap="0">
+		<mx:HBox width="100%" styleName="uTorrentButtonBox">
+			<fly.uTorrent.ui.assets:AddButton id="addBtn" />
+			<fly.uTorrent.ui.assets:RemoveButton id="removeBtn" />
+			<fly.uTorrent.ui.assets:StartButton id="startBtn" />
+			<fly.uTorrent.ui.assets:PauseButton id="pauseBtn" />
+			<fly.uTorrent.ui.assets:StopButton id="stopBtn" />
+		</mx:HBox>
+		<fly.uTorrent.ui.assets:SettingsButton id="settingsBtn"  />
+	</mx:HBox>
+	<mx:HRule width="100%" />
+	<fly.flex.controls:ExtendedList id="torrentList" itemRenderer="fly.uTorrent.ui.renderers.TorrentRenderer" rowHeight="28" allowMultipleSelection="true" rowCount="5" width="100%" rollOverAlpha="0" selectionAlpha="0.2" backgroundAlpha="0" height="100%" />
+	<mx:HRule width="100%" />
+	<mx:HBox width="100%" horizontalGap="0" verticalAlign="middle">
+		<mx:Spacer width="100%" />
+		<mx:Label id="downTxt" width="80" textAlign="right" />
+		<mx:Image id="downImg" />
+		<mx:Label id="upTxt" width="80" textAlign="right" />
+		<mx:Image id="upImg" />
+	</mx:HBox>
+</mx:VBox>
