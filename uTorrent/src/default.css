@@ -1,0 +1,19 @@
+/*
+	General
+*/
+Button
+{
+	/*
+	corner-radius: 10;
+	fill-alphas: 0.6, 0.5, 1, 1;
+	fill-colors: #666666, #000000, #666666, #000000;
+	text-roll-over-color: #ffffff;
+	border-color: #666666;
+	padding-left: 0;
+	padding-right: 0;
+	up-skin: ClassReference('fly.uTorrent.skins.DefaultButtonSkin');
+	down-skin: ClassReference('fly.uTorrent.skins.DefaultButtonSkin');
+	over-skin: ClassReference('fly.uTorrent.skins.DefaultButtonSkin');
+	disabled-skin: ClassReference('fly.uTorrent.skins.DefaultButtonSkin');
+	*/
+}

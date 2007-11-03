@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actionScriptProperties mainApplicationPath="uTorrent.mxml" version="3">
+<compiler additionalCompilerArguments="-locale en_US" copyDependentFiles="true" enableModuleDebug="true" generateAccessible="false" htmlExpressInstall="true" htmlGenerate="false" htmlHistoryManagement="false" htmlPlayerVersion="9.0.28" htmlPlayerVersionCheck="true" outputFolderPath="bin" sourceFolderPath="src" strict="true" useApolloConfig="true" verifyDigests="true" warn="true">
+<compilerSourcePath/>
+<libraryPath defaultLinkType="1">
+<libraryPathEntry kind="4" path=""/>
+<libraryPathEntry kind="1" linkType="1" path="libs"/>
+<libraryPathEntry kind="3" linkType="1" path="${CLASSES}/lib/CLASSES.swc" sourcepath="${CLASSES}/src" useDefaultLinkType="false"/>
+</libraryPath>
+<sourceAttachmentPath>
+<sourceAttachmentPathEntry kind="3" linkType="1" path="${CLASSES}/lib/CLASSES.swc" sourcepath="${CLASSES}/src" useDefaultLinkType="false"/>
+</sourceAttachmentPath>
+</compiler>
+<applications>
+<application path="uTorrent.mxml"/>
+</applications>
+<modules/>
+<buildCSSFiles>
+<buildCSSFileEntry destPath="E:/Projects/uTorrent/bin" sourcePath="src/skins/current/uTorrentSkin.css"/>
+<buildCSSFileEntry destPath="E:/Projects/uTorrent/bin" sourcePath="skins/current/uTorrentSkin.css"/>
+</buildCSSFiles>
+</actionScriptProperties>
