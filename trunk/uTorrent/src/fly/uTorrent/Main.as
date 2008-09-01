@@ -1,38 +1,16 @@
 package fly.uTorrent
 {
-	import fly.utils.cfDump;
-	import flash.net.URLRequest;
-	import flash.net.URLLoader;
 	import flash.events.Event;
-	import flash.events.IOErrorEvent;
-	import com.adobe.serialization.json.JSON;
-	import mx.utils.ObjectUtil;
-	import fly.uTorrent.decode.Torrent;
-	import flash.net.URLRequestHeader;
-	import fly.serialization.base64.Base64;
-	import fly.utils.cfDumpClear;
-	import mx.managers.PopUpManager;
-	import fly.flex.events.ButtonClickEvent;
-	import fly.flex.events.ButtonClickEventKind;
-	import fly.uTorrent.ui.SettingsUI;
-	import fly.uTorrent.ui.UTorrent;
-	import mx.core.Application;
-	import fly.uTorrent.ui.assets.CloseButton;
-	import mx.containers.HBox;
-	import mx.controls.Spacer;
-	import fly.uTorrent.ui.assets.MinimizeButton;
+	import flash.events.EventPhase;
 	import flash.events.MouseEvent;
 	
-	import mx.core.mx_internal;
-	import mx.events.FlexEvent;
-	import flash.events.EventPhase;
-	import flash.display.DisplayObject;
-	import fly.uTorrent.events.UTorrentEvent;
-	import mx.core.UIComponent;
-	import mx.managers.CursorManager;
 	import fly.net.OutgoingLocalConnection;
-	import flash.display.StageDisplayState;
-	import flash.events.Event;
+	import fly.uTorrent.ui.UTorrent;
+	import fly.utils.cfDump;
+	import fly.utils.cfDumpClear;
+	
+	import mx.core.Application;
+	import mx.core.UIComponent;
 	
 	[Style(name="resizeCursor", type="Class", inherit="no")]
 	

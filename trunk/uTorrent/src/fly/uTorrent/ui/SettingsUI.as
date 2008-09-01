@@ -1,16 +1,11 @@
 package fly.uTorrent.ui
 {
+	import flash.events.Event;
 	import flash.events.MouseEvent;
-	import mx.managers.PopUpManager;
+	
 	import fly.flex.events.ButtonClickEvent;
 	import fly.flex.events.ButtonClickEventKind;
-	import flash.net.SharedObject;
-	import fly.utils.cfDump;
-	import flash.events.Event;
 	import fly.uTorrent.Settings;
-	import mx.styles.StyleManager;
-	import mx.styles.CSSStyleDeclaration;
-	import fly.uTorrent.skins.Icons;
 	
 	[Event(name="buttonClick", type="fly.flex.events.ButtonClickEvent")]
 	
