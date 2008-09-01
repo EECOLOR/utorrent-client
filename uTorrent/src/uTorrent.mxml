@@ -16,7 +16,7 @@
 	horizontalScrollPolicy="off"
 	verticalScrollPolicy="off"
 >
-	<!--<mx:Style source="/skins/current/uTorrent.css" />-->
-	<mx:Style source="default.css" />
+	<mx:Style source="/skins/current/uTorrentSkin.css" />
+	<!--<mx:Style source="default.css" />-->
 	
 </fly.uTorrent:Main>

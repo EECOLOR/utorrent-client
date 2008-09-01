@@ -1,56 +1,43 @@
 package fly.uTorrent.ui
 {
-	import mx.managers.PopUpManager;
-	import fly.uTorrent.Settings;
-	import fly.flex.events.ButtonClickEventKind;
-	import fly.flex.events.ButtonClickEvent;
-	import flash.net.URLLoader;
+	import com.adobe.serialization.json.JSON;
+	
+	import flash.desktop.NativeApplication;
+	import flash.display.NativeWindow;
 	import flash.events.Event;
-	import fly.utils.cfDump;
-	import fly.uTorrent.decode.Torrents;
-	import fly.utils.BytesUtil;
-	import flash.utils.Timer;
-	import flash.events.TimerEvent;
+	import flash.events.IEventDispatcher;
 	import flash.events.IOErrorEvent;
+	import flash.events.InvokeEvent;
 	import flash.events.MouseEvent;
+	import flash.events.TimerEvent;
+	import flash.filesystem.File;
+	import flash.filesystem.FileMode;
+	import flash.filesystem.FileStream;
+	import flash.geom.Point;
 	import flash.net.URLRequest;
 	import flash.net.URLRequestHeader;
-	import com.adobe.serialization.json.JSON;
-	import fly.uTorrent.Commands;
-	import fly.uTorrent.decode.Torrent;
-	import mx.events.ListEvent;
-	import mx.styles.CSSStyleDeclaration;
-	import mx.styles.StyleManager;
-	import fly.uTorrent.skins.Indicators;
-	import mx.events.FlexMouseEvent;
-	import fly.uTorrent.skins.Icons;
-	import fly.uTorrent.decode.TorrentInfo;
-	import flash.net.URLVariables;
-	import flash.net.FileReferenceList;
-	import flash.net.FileReference;
-	import flash.events.HTTPStatusEvent;
-	import flash.events.SecurityErrorEvent;
-	import flash.geom.Point;
-	import fly.uTorrent.events.UTorrentEvent;
-	import flash.display.DisplayObject;
-	import mx.core.IFlexDisplayObject;
-	import fly.net.SocketURLLoader;
-	import flash.filesystem.File;
-	import flash.filesystem.FileStream;
 	import flash.utils.ByteArray;
-	import flash.filesystem.FileMode;
+	import flash.utils.Timer;
+	
+	import fly.flex.events.ButtonClickEvent;
+	import fly.flex.events.ButtonClickEventKind;
 	import fly.net.SocketHTTPFileRequest;
-	import flash.system.Shell;
-	import flash.events.InvokeEvent;
-	import mx.events.StyleEvent;
-	import flash.events.IEventDispatcher;
-	import flash.utils.getDefinitionByName;
-	import mx.managers.SystemManager;
+	import fly.net.SocketURLLoader;
+	import fly.uTorrent.Commands;
+	import fly.uTorrent.Settings;
+	import fly.uTorrent.decode.Torrent;
+	import fly.uTorrent.decode.TorrentInfo;
+	import fly.uTorrent.decode.Torrents;
+	import fly.uTorrent.events.UTorrentEvent;
+	import fly.utils.BytesUtil;
+	import fly.utils.cfDump;
+	
+	import mx.core.Application;
 	import mx.events.FlexEvent;
-	import flash.display.NativeWindow;
-	import flash.display.NativeWindowInitOptions;
-	import flash.display.NativeWindowSystemChrome;
-	import mx.controls.Label;
+	import mx.events.ListEvent;
+	import mx.events.StyleEvent;
+	import mx.managers.PopUpManager;
+	import mx.styles.StyleManager;
 	
 	[Style(name="uploadIndicator", type="Class", inherit="no")]
 	[Style(name="downloadIndicator", type="Class", inherit="no")]
@@ -99,7 +86,8 @@ package fly.uTorrent.ui
 			
 			_filesToAddQueue_arr = new Array();
 			
-			Shell.shell.addEventListener(InvokeEvent.INVOKE, _shellInvokeHandler);
+			var nativeApplication:NativeApplication = NativeApplication.nativeApplication;
+			nativeApplication.addEventListener(InvokeEvent.INVOKE, _shellInvokeHandler);
 			
 			addEventListener(FlexEvent.CREATION_COMPLETE, _creationCompleteHandler);
 		};
@@ -359,7 +347,7 @@ package fly.uTorrent.ui
 		
 		private function _loadSkin():IEventDispatcher
 		{
-			var applicationResourceDirectory_str:String = File.applicationResourceDirectory.url;
+			var applicationResourceDirectory_str:String = File.applicationDirectory.url;
 			return StyleManager.loadStyleDeclarations(applicationResourceDirectory_str + "skins/current/" + _settings.skinName + ".swf");
 		};
 		
