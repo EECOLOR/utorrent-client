@@ -1,7 +1,6 @@
 package fly.uTorrent.ui.assets
 {
 	import mx.controls.Button;
-	import fly.utils.cfDump;
 	import mx.core.mx_internal;
 
 	public class HandButton extends Button

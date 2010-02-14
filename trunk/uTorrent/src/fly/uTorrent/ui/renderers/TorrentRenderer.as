@@ -3,7 +3,6 @@ package fly.uTorrent.ui.renderers
 	import mx.core.mx_internal;
 	import fly.uTorrent.decode.Torrent;
 	import fly.uTorrent.skins.Indicators;
-	import fly.flex.controls.Indicator;
 	import mx.styles.StyleManager;
 	import mx.styles.CSSStyleDeclaration;
 	import fly.uTorrent.decode.TorrentInfo;

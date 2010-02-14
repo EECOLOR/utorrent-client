@@ -4,10 +4,7 @@ package fly.uTorrent
 	import flash.events.EventPhase;
 	import flash.events.MouseEvent;
 	
-	import fly.net.OutgoingLocalConnection;
 	import fly.uTorrent.ui.UTorrent;
-	import fly.utils.cfDump;
-	import fly.utils.cfDumpClear;
 	
 	import mx.core.Application;
 	import mx.core.UIComponent;
@@ -22,10 +19,6 @@ package fly.uTorrent
 		
 		public function Main()
 		{
-			OutgoingLocalConnection.throwErrors = false;
-			cfDumpClear();
-			cfDump("uTorrent application started...");
-			
 			addEventListener(Event.ADDED_TO_STAGE, _addedToStageHandler);
 		};
 		

@@ -1,8 +1,6 @@
 package fly.uTorrent.decode
 {
 	import mx.collections.ArrayCollection;
-	import fly.utils.copyObject;
-	import fly.utils.cfDump;
 	
 	public class Torrents
 	{
