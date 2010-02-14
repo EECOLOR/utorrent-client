@@ -1,10 +1,11 @@
 package fly.uTorrent
 {
-	import flash.net.URLVariables;
+	
 	
 	public class Commands
 	{
 		static public const LIST:String = "list=1";
+		static public const TOKEN:String = "token.html";
 		static public const HASH:String = "hash=";
 		static public const ACTION:String = "action=";
 		static public const ACTION_START:String = "start";
@@ -14,15 +15,27 @@ package fly.uTorrent
 		static public const ACTION_PAUSE:String = "pause";
 		static public const ACTION_REMOVE:String = "remove";
 		
-		static public function getURL(command_str:String):String
+		static private var _token:String;
+		
+		static public function setToken(token:String):void
 		{
-			return Settings.instance.totalURL + "?" + command_str;
+			_token = "?token=" + token + "&";
+		}
+		
+		static public function getURL(command_str:String, ignoreToken:Boolean = false):String
+		{
+			return Settings.instance.totalURL + _token + command_str;
 		};
 		
-		static public function getActionURL(action:Function, arguments_arr:Array = null):String
+		static public function getActionURL(action:Function, arguments_arr:Array = null, ignoreToken:Boolean = false):String
 		{
-			return Settings.instance.totalURL + "?" + action.apply(Commands, arguments_arr);
+			return Settings.instance.totalURL + _token + action.apply(Commands, arguments_arr);
 		};
+		
+		static public function get tokenURL():String
+		{
+			return Settings.instance.totalURL + TOKEN;
+		}
 		
 		static public function list():String
 		{

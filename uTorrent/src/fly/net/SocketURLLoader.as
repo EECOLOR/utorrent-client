@@ -1,19 +1,18 @@
 package fly.net
 {
-	import flash.events.EventDispatcher;
-	import flash.net.Socket;
-	import flash.utils.ByteArray;
-	import flash.net.URLRequest;
-	import flash.net.URLLoaderDataFormat;
+	import flash.errors.IOError;
 	import flash.events.Event;
+	import flash.events.EventDispatcher;
+	import flash.events.HTTPStatusEvent;
 	import flash.events.IOErrorEvent;
 	import flash.events.ProgressEvent;
 	import flash.events.SecurityErrorEvent;
-	import flash.events.HTTPStatusEvent;
+	import flash.net.Socket;
+	import flash.net.URLLoaderDataFormat;
+	import flash.net.URLRequest;
+	import flash.net.URLRequestHeader;
 	import flash.net.URLVariables;
-	import fly.net.HTTP_SEPARATOR;
-	import flash.errors.IOError;
-	import fly.utils.cfDump;
+	import flash.utils.ByteArray;
 
 	/**
 	 * Dispatched when the socket is closed.
@@ -419,8 +418,6 @@ package fly.net
 		private function _socketDataHandler(e:ProgressEvent):void
 		{
 			_socket.readBytes(_socketData, _socketData.length, _socket.bytesAvailable);
-			
-			cfDump(_socketData.toString());
 			
 			if (!_headerFound_bool)
 			{

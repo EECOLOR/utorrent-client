@@ -13,14 +13,11 @@ package fly.uTorrent.ui
 	import flash.filesystem.File;
 	import flash.filesystem.FileMode;
 	import flash.filesystem.FileStream;
-	import flash.geom.Point;
 	import flash.net.URLRequest;
 	import flash.net.URLRequestHeader;
 	import flash.utils.ByteArray;
 	import flash.utils.Timer;
 	
-	import fly.flex.events.ButtonClickEvent;
-	import fly.flex.events.ButtonClickEventKind;
 	import fly.net.SocketHTTPFileRequest;
 	import fly.net.SocketURLLoader;
 	import fly.uTorrent.Commands;
@@ -28,11 +25,11 @@ package fly.uTorrent.ui
 	import fly.uTorrent.decode.Torrent;
 	import fly.uTorrent.decode.TorrentInfo;
 	import fly.uTorrent.decode.Torrents;
+	import fly.uTorrent.events.ButtonClickEvent;
+	import fly.uTorrent.events.ButtonClickEventKind;
 	import fly.uTorrent.events.UTorrentEvent;
 	import fly.utils.BytesUtil;
-	import fly.utils.cfDump;
 	
-	import mx.core.Application;
 	import mx.events.FlexEvent;
 	import mx.events.ListEvent;
 	import mx.events.StyleEvent;
@@ -62,6 +59,8 @@ package fly.uTorrent.ui
 		
 		private var _styleManagerDispatcher:IEventDispatcher;
 		
+		private var _retrievingToken:Boolean;
+		
 		public function UTorrent()
 		{
 			_settings = Settings.instance;
@@ -79,10 +78,10 @@ package fly.uTorrent.ui
 			
 			_file = new File();
 			
-			_torrents = new Torrents();
-			
 			_timer = new Timer(1000);
 			_timer.addEventListener(TimerEvent.TIMER, _timerHandler);
+
+			_torrents = new Torrents();
 			
 			_filesToAddQueue_arr = new Array();
 			
@@ -122,7 +121,6 @@ package fly.uTorrent.ui
 				//load the default style
 				_styleManagerDispatcher = _loadSkin();
 				_styleManagerDispatcher.addEventListener(StyleEvent.COMPLETE, _initStyleCompleteHandler);
-				cfDump("creationComplete");
 			} else
 			{
 				_init();
@@ -174,9 +172,23 @@ package fly.uTorrent.ui
 			closeBtn.addEventListener(MouseEvent.CLICK, _closeClickHandler);
 		};
 		
+		private function _getToken():void
+		{
+			_retrievingToken = true;
+			
+			var request:URLRequest = new URLRequest(Commands.tokenURL);
+			var authenticationHeader:URLRequestHeader = _settings.authenticationHeader;
+			if (authenticationHeader)
+			{
+				request.requestHeaders.push(authenticationHeader);		
+			};
+			
+			_loader.load(request);
+			
+		}
+		
 		private function _addClickHandler(e:MouseEvent):void
 		{
-			cfDump("addClickHandler");
 			//?action=add-file
 			_file.browse();
 		};
@@ -251,8 +263,6 @@ package fly.uTorrent.ui
 				!pauseBtn.hitTestPoint(stage.mouseX, stage.mouseY) &&
 				!settingsBtn.hitTestPoint(stage.mouseX, stage.mouseY))
 			{
-				cfDump("removing selection");
-				cfDump(stage.getObjectsUnderPoint(new Point(stage.mouseX, stage.mouseY)));
 				torrentList.selectedItem = null;
 				_torrentListChangeHandler(null);
 			};
@@ -341,6 +351,7 @@ package fly.uTorrent.ui
 		
 		private function _init():void
 		{
+			_getToken();
 			_styleManagerDispatcher = _loadSkin();
 			_styleManagerDispatcher.addEventListener(StyleEvent.COMPLETE, _styleManagerCompleteHandler);
 		};
@@ -357,7 +368,6 @@ package fly.uTorrent.ui
 			upImg.source = getStyle("uploadIndicator");
 			
 			_initFileUpload();
-			_startPolling();
 			
 			_initialized_bool = true;
 		};
@@ -388,18 +398,6 @@ package fly.uTorrent.ui
 			{
 				_addNextFile();
 			};
-			
-			cfDump(e, 5);
-		};
-		
-		private function _completeHandler(e:Event):void
-		{
-			cfDump(e, 5);
-		};
-		
-		private function _errorHandler(e:Event):void
-		{
-			cfDump(e, 5);
 		};
 		
 		private function _fileSelectHandler(e:Event):void
@@ -439,7 +437,6 @@ package fly.uTorrent.ui
 		
 		private function _startPolling():void
 		{
-
 			_timer.start();
 			_getData();
 		};
@@ -457,31 +454,41 @@ package fly.uTorrent.ui
 			{
 		        request.requestHeaders.push(authenticationHeader);		
 		 	};
-	        	// TODO test
+
 			_loader.load(request);
 		};
 		
 		
 		private function _ioErrorHandler(e:IOErrorEvent):void
 		{
-			cfDump(e, 5);
+			trace("_ioErrorHandler: " + e);
 		};
 		
 		private function _loadCompleteHandler(e:Event):void
 		{
-			var data_str:String = _loader.data;
-			var data_obj:Object = JSON.decode(data_str);
-			
-			var torrents_arr:Array = data_obj.torrents;
-			
-			_torrents.updateTorrents(torrents_arr);
-			
-			if (torrentList.selectedItems.length)
+			if (_retrievingToken)
 			{
-				_updateButtons();
-			};
-			
-			_displayDownloadSpeed();
+				_retrievingToken = false;
+				
+				Commands.setToken(new XML(_loader.data).div.text());
+				
+				_startPolling();
+			} else
+			{
+				var data_str:String = _loader.data;
+				var data_obj:Object = JSON.decode(data_str);
+				
+				var torrents_arr:Array = data_obj.torrents;
+				
+				_torrents.updateTorrents(torrents_arr);
+				
+				if (torrentList.selectedItems.length)
+				{
+					_updateButtons();
+				};
+				
+				_displayDownloadSpeed();
+			}
 		};					
 		
 		private function _displayDownloadSpeed():void
