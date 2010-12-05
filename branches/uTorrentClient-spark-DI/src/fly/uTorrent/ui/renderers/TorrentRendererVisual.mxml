@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	xmlns:fly.uTorrent.ui.renderers="fly.uTorrent.ui.renderers.*"
+	width="100%" height="100%"
+	verticalAlign="middle"
+>
+	<mx:Image id="statusImg" />
+	<mx:Canvas width="100%" id="backgroundHolder" horizontalScrollPolicy="off">
+		<fly.uTorrent.ui.renderers:TorrentRendererBackground id="background" width="100%" height="100%" />
+		<mx:HBox width="100%" mouseChildren="false" mouseEnabled="false" horizontalGap="0">
+			<mx:Label id="label1Txt" styleName="torrentRendererLabel1" width="{backgroundHolder.width - label2Txt.width}" />
+			<mx:Spacer width="100%" />
+			<mx:Label id="label2Txt" styleName="torrentRendererLabel2" />
+		</mx:HBox>
+	</mx:Canvas>
+	<fly.uTorrent.ui.renderers:TorrentRendererRatio id="ratio" width="15" height="{background.height}" />
+</mx:HBox>

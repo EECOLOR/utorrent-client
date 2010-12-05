@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fly.uTorrent.ui.assets:HandButton 
+	xmlns:fly.uTorrent.ui.assets="fly.uTorrent.ui.assets.*"
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	toolTip="Ok" />

@@ -1,0 +1,250 @@
+/*
+	General
+*/
+Application
+{
+	theme-color: #5A82BD;
+	color: #FFFFFF;
+}
+
+ToolTip 
+{
+   corner-radius: 10;
+   background-color: #000000;
+   color: #ffffff;
+}
+
+Button
+{
+	corner-radius: 10;
+	fill-alphas: 0.6, 0.5, 1, 1;
+	fill-colors: #666666, #000000, #666666, #000000;
+	text-roll-over-color: #ffffff;
+	border-color: #666666;
+	padding-left: 0;
+	padding-right: 0;
+}
+
+ScrollBar
+{
+   corner-radius: 5;
+   fill-alphas: 0.6, 0.6, 0.6, 0.6;
+   fill-colors: #666666, #000000, #666666, #000000;
+   track-colors: #000000, #666666;
+   border-color: #666666;
+}	
+
+OkButton
+{
+	up-skin: Embed('images/ok_24_dis.png');
+	over-skin: Embed('images/ok_24_hot.png');
+	down-skin: Embed('images/ok_24_dis.png');	
+	disabled-skin: Embed('images/ok_24_dis.png');
+}
+
+CancelButton
+{
+	up-skin: Embed('images/cancel_24_dis.png');
+	over-skin: Embed('images/cancel_24.png');
+	down-skin: Embed('images/cancel_24_dis.png');	
+	disabled-skin: Embed('images/cancel_24_dis.png');
+}
+
+HRule
+{
+	strokeColor: #666666;
+	shadowColor: #000000;
+}
+
+StartButton
+{
+	up-skin: Embed('images/play_24_dis.png');
+	over-skin: Embed('images/play_24.png');
+	down-skin: Embed('images/play_24_dis.png');
+	disabled-skin: Embed('images/play_24_dis.png');
+}
+
+StopButton
+{
+	up-skin: Embed('images/stop_24_dis.png');
+	over-skin: Embed('images/stop_24.png');
+	down-skin: Embed('images/stop_24_dis.png');
+	disabled-skin: Embed('images/stop_24_dis.png');
+}
+
+PauseButton
+{
+	up-skin: Embed('images/pause_24_dis.png');
+	over-skin: Embed('images/pause_24.png');
+	down-skin: Embed('images/pause_24_dis.png');
+	disabled-skin: Embed('images/pause_24_dis.png');
+}
+
+AddButton
+{
+	up-skin: Embed('images/plus_24_dis.png');
+	over-skin: Embed('images/plus_24.png');
+	down-skin: Embed('images/plus_24_dis.png');
+	disabled-skin: Embed('images/plus_24_dis.png');
+}
+
+RemoveButton
+{
+	up-skin: Embed('images/delete_24_dis.png');
+	over-skin: Embed('images/delete_24.png');
+	down-skin: Embed('images/delete_24_dis.png');
+	disabled-skin: Embed('images/delete_24_dis.png');
+}
+
+SettingsButton
+{
+	up-skin: Embed('images/gear_1_24_dis.png');
+	over-skin: Embed('images/gear_2_24.png');
+	down-skin: Embed('images/gear_1_24_dis.png');
+	disabled-skin: Embed('images/gear_1_24_dis.png');
+}
+
+MinimizeButton
+{
+	up-skin: Embed('images/delete_24_dis.png');
+	over-skin: Embed('images/delete_24.png');
+	down-skin: Embed('images/delete_24_dis.png');
+	disabled-skin: Embed('images/delete_24_dis.png');
+}
+
+CloseButton
+{
+	up-skin: Embed('images/close_1_24_dis.png');
+	over-skin: Embed('images/close_1_24.png');
+	down-skin: Embed('images/close_1_24_dis.png');
+	disabled-skin: Embed('images/close_1_24_dis.png');
+}
+
+/*
+	UTorrent
+*/
+UTorrent
+{
+	padding-left: 10;
+	padding-right: 10;
+	padding-bottom: 10;
+	padding-top: 0;
+
+	background-alpha: 0.7;
+	background-color: #000000;
+	corner-radius: 10;
+	
+	border-color: #000000;
+	border-style: solid;
+	border-thickness: 3;
+	border-alpha: 0.8;
+	
+	upload-indicator: Embed('images/up_24.png');
+	download-indicator: Embed('images/down_24.png');
+	
+	/*
+	close-icon: Embed('images/close_1_24_dis.png');
+	minimize-icon: Embed('images/delete_24_dis.png');
+	*/
+	
+	/*
+	start-icon: Embed('images/play_24.png');
+	resume-icon: Embed('images/last_24_hot.png');
+	stop-icon: Embed('images/stop_24.png');
+	pause-icon: Embed('images/pause_24.png');
+	add-icon: Embed('images/plus_24.png');
+	remove-icon: Embed('images/delete_24.png');
+	settings-icon: Embed('images/gear_2_24.png');
+	*/
+}
+
+.uTorrentButtonBox
+{
+	horizontal-gap: 2;
+	padding-right: 2;
+}
+
+/*
+	List
+*/
+ExtendedList
+{
+	border-style: none;
+}
+
+TorrentRenderer
+{
+	upload-indicator: Embed('images/up_24.png');
+	download-indicator: Embed('images/down_24.png');
+	stop-indicator: Embed('images/stop_24.png');
+	check-indicator: Embed('images/refresh_24.png');
+	pause-indicator: Embed('images/pause_24.png');
+	queue-indicator: Embed('images/clock_2_24.png');
+	error-indicator: Embed('images/close_1_24.png');
+	unknown-indicator: Embed('images/help_24_hot.png');
+}
+
+.torrentRendererLabel1
+{
+}
+
+.torrentRendererLabel2
+{
+	text-align: right;
+}
+
+TorrentRendererBackground
+{
+	background-alpha: 0.5;
+	background-color: #5A82BD;
+	border-thickness: 2;
+	border-color: #FFFFFF;
+	border-alpha: 0.5;
+}
+
+TorrentRendererRatio
+{
+	background-alpha: 0.5;
+	background-color: #5A82BD;
+	border-thickness: 2;
+	border-color: #FFFFFF;
+	border-alpha: 0.5;
+}
+
+/*
+	Settings
+*/
+SettingsLabel
+{
+	font-weight: bold;
+}
+
+SettingsTextInput
+{
+	border-color: #000000;
+	corner-radius: 2;
+	background-color: #000000;
+	background-alpha: 0.5;
+}
+
+.settingsURLExplaination
+{
+}
+
+SettingsUI
+{
+	padding-left: 10;
+	padding-right: 10;
+	padding-bottom: 10;
+	padding-top: 10;
+	
+	background-alpha: 0.7;
+	background-color: #000000;
+	corner-radius: 10;
+	
+	border-color: #000000;
+	border-style: solid;
+	border-thickness: 3;
+	border-alpha: 0.8;
+}
+
