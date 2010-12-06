@@ -16,6 +16,7 @@
       <libraryPathEntry kind="1" linkType="1" path="libs"/>
       <libraryPathEntry kind="3" linkType="1" path="/DI-spark/bin/DI-spark.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="/DI/bin/DI.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="/sparkComponents/bin/sparkComponents.swc" useDefaultLinkType="false"/>
     </libraryPath>
     <sourceAttachmentPath/>
   </compiler>

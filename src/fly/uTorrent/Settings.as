@@ -21,9 +21,13 @@ package fly.uTorrent
 		public function Settings()
 		{
 			_sharedObject = SharedObject.getLocal("uTorrentSettings", "/");
+			
+			_sharedObject.data.settingsSaved = null;
+			_sharedObject.flush();
+			
 			_found = _sharedObject.data.hasOwnProperty("settings") && _sharedObject.data.settingsSaved;
 			
-			if (found) 
+			if (_found) 
 			{
 				var ba:ByteArray = _sharedObject.data.settings;
 				var settings:Settings = Settings(ba.readObject());

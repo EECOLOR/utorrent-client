@@ -1,26 +1,14 @@
 package fly.uTorrent.ui
 {
-	import com.adobe.serialization.json.JSON;
+	import ee.di.extensions.spark.SkinnableComponent;
 	
 	import flash.desktop.NativeApplication;
-	import flash.display.NativeWindow;
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
-	import flash.events.IOErrorEvent;
 	import flash.events.InvokeEvent;
 	import flash.events.MouseEvent;
-	import flash.events.TimerEvent;
 	import flash.filesystem.File;
-	import flash.filesystem.FileMode;
-	import flash.filesystem.FileStream;
-	import flash.net.URLRequest;
-	import flash.net.URLRequestHeader;
-	import flash.utils.ByteArray;
-	import flash.utils.Timer;
 	
-	import fly.flex.controls.ExtendedList;
-	import fly.net.SocketHTTPFileRequest;
-	import fly.net.SocketURLLoader;
 	import fly.uTorrent.Commands;
 	import fly.uTorrent.Settings;
 	import fly.uTorrent.decode.Torrent;
@@ -28,32 +16,26 @@ package fly.uTorrent.ui
 	import fly.uTorrent.decode.Torrents;
 	import fly.uTorrent.events.ButtonClickEvent;
 	import fly.uTorrent.events.ButtonClickEventKind;
-	import fly.uTorrent.events.UTorrentEvent;
 	import fly.uTorrent.events.UTorrentListEvent;
 	import fly.utils.BytesUtil;
 	
-	import mx.events.FlexEvent;
 	import mx.events.ListEvent;
-	import mx.events.StyleEvent;
 	import mx.managers.PopUpManager;
-	import mx.styles.StyleManager;
 	
 	import spark.components.Button;
 	import spark.components.Label;
-	import spark.components.supportClasses.SkinnableComponent;
+	import spark.components.List;
+	import spark.components.supportClasses.Skin;
 	
 	[Style(name="uploadIndicator", type="Class", inherit="no")]
 	[Style(name="downloadIndicator", type="Class", inherit="no")]
 	
-	[Event(name="createdPopup", type="fly.uTorrent.events.UTorrentEvent")]
-
-	public class UTorrent extends SkinnableComponent// UTorrentVisual
+	public class UTorrent extends SkinnableComponent
 	{
-		[SkinPart(required="true")]
-		public var settingsUI:SettingsUI;
+		private var _settingsUI:SettingsUI;
 		
 		[SkinPart(required="true")]
-		public var torrentList:ExtendedList;
+		public var torrentList:List;
 		
 		[SkinPart(required="true")]
 		public var  startBtn:Button;
@@ -115,15 +97,26 @@ package fly.uTorrent.ui
 			addEventListener(MouseEvent.CLICK, _clickHandler);
 		}
 		
+		[Inject]
+		public function set settingsUI(value:SettingsUI):void
+		{
+			_settingsUI = value;
+			_settingsUI.addEventListener(ButtonClickEvent.BUTTON_CLICK, _settingsUIButtonClickHandler);	
+		}
+		
+		[Inject]
+		[UTorrent]
+		public function set injectSkin(value:Skin):void
+		{
+			setSkin(value);
+		}
+		
 		protected override function partAdded(partName:String, instance:Object):void
 		{
 			super.partAdded(partName,instance);
 			
 			switch (instance)
 			{
-				case settingsUI:
-					settingsUI.addEventListener(ButtonClickEvent.BUTTON_CLICK, _settingsUIButtonClickHandler);
-					break;
 				case torrentList:
 					torrentList.labelField = "name";
 					torrentList.dataProvider = _torrents.torrents;
@@ -165,9 +158,6 @@ package fly.uTorrent.ui
 		{
 			switch (instance)
 			{
-				case settingsUI:
-					settingsUI.removeEventListener(ButtonClickEvent.BUTTON_CLICK, _settingsUIButtonClickHandler);
-					break;
 				case torrentList:
 					torrentList.removeEventListener(ListEvent.ITEM_CLICK, _torrentListChangeHandler);
 					break;
@@ -290,21 +280,16 @@ package fly.uTorrent.ui
 		
 		private function _settingsClickHandler(e:MouseEvent):void
 		{
-			PopUpManager.addPopUp(settingsUI, this, true);
+			PopUpManager.addPopUp(_settingsUI, this, true);
 			
-			PopUpManager.centerPopUp(settingsUI);
-			
-			var uTorrentEvent:UTorrentEvent = new UTorrentEvent(UTorrentEvent.CREATED_POPUP);
-			uTorrentEvent.popup = settingsUI;
-			
-			dispatchEvent(uTorrentEvent);
+			//PopUpManager.centerPopUp(settingsUI);
 		}
 		
 		private function _settingsUIButtonClickHandler(e:ButtonClickEvent):void
 		{
 			if (_settings.found || e.kind == ButtonClickEventKind.OK)
 			{
-				PopUpManager.removePopUp(settingsUI);
+				PopUpManager.removePopUp(_settingsUI);
 			}
 			
 			if (e.kind == ButtonClickEventKind.OK)
@@ -315,7 +300,7 @@ package fly.uTorrent.ui
 		
 		private function _updateButtons():void
 		{
-			var torrents:Array = torrentList.selectedItems;
+			var torrents:Vector.<Object> = torrentList.selectedItems;
 			
 			var torrentsSelected:Boolean = Boolean(torrents.length);
 			var startEnabled:Boolean;
@@ -364,7 +349,7 @@ package fly.uTorrent.ui
 		{
 			var downloadSpeed_num:Number = 0;
 			var uploadSpeed_num:Number = 0;
-			var torrents:Array = torrentList.selectedItems;
+			var torrents:Vector.<Object> = torrentList.selectedItems;
 			var torrent:Torrent;
 			
 			if (torrents.length)

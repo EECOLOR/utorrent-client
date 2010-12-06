@@ -2,6 +2,8 @@ package fly.uTorrent
 {
 	import com.adobe.serialization.json.JSON;
 	
+	import ee.di.extensions.spark.IInjectable;
+	
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.IOErrorEvent;
@@ -19,8 +21,8 @@ package fly.uTorrent
 	import fly.uTorrent.decode.Torrent;
 	import fly.uTorrent.decode.TorrentInfo;
 	
-	
-	public class Commands extends EventDispatcher
+	[Constructor("[Inject]")]
+	public class Commands extends EventDispatcher implements IInjectable
 	{
 		static public const LIST:String = "list=1";
 		static public const TOKEN:String = "token.html";
@@ -47,7 +49,6 @@ package fly.uTorrent
 		
 		private var _settings:Settings;
 		
-		[Inject]
 		public function Commands(settings:Settings)
 		{
 			_settings = settings;
@@ -69,7 +70,7 @@ package fly.uTorrent
 			_filesToAddQueue_arr = [];
 		}
 		
-		private function _doAction(action:String, torrents:Array = null):void
+		private function _doAction(action:String, torrents:Vector.<Object> = null):void
 		{
 			var hashes:Array;
 			
@@ -255,27 +256,27 @@ package fly.uTorrent
 			return _doAction(ACTION_ADD_FILE);
 		}
 		
-		public function start(torrents:Array):void
+		public function start(torrents:Vector.<Object>):void
 		{
 			_doAction(ACTION_START, torrents);
 		}
 		
-		public function forceStart(torrents:Array):void
+		public function forceStart(torrents:Vector.<Object>):void
 		{
 			_doAction(ACTION_FORCE_START, torrents);			
 		}
 		
-		public function stop(torrents:Array):void
+		public function stop(torrents:Vector.<Object>):void
 		{
 			_doAction(ACTION_STOP, torrents);			
 		}
 		
-		public function pause(torrents:Array):void
+		public function pause(torrents:Vector.<Object>):void
 		{
 			_doAction(ACTION_PAUSE, torrents);			
 		}
 		
-		public function remove(torrents:Array):void
+		public function remove(torrents:Vector.<Object>):void
 		{
 			_doAction(ACTION_REMOVE, torrents);		
 		}
