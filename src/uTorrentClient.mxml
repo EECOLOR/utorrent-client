@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:spark="ee.di.extensions.spark.*" xmlns:uTorrent="fly.uTorrent.*" xmlns:ui="fly.uTorrent.ui.*" xmlns:di="fly.uTorrent.di.*">
+	<fx:Declarations>
+		<spark:DI>
+			<di:UTorrentClientModule />
+		</spark:DI>
+	</fx:Declarations>
+	<ui:UTorrent />
+</s:WindowedApplication>

@@ -1,5 +1,7 @@
 package fly.uTorrent.ui
 {
+	import ee.di.extensions.spark.SkinnableComponent;
+	
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
@@ -7,51 +9,114 @@ package fly.uTorrent.ui
 	import fly.uTorrent.events.ButtonClickEvent;
 	import fly.uTorrent.events.ButtonClickEventKind;
 	
+	import mx.core.IUIComponent;
+	
+	import spark.components.Button;
+	import spark.components.TextInput;
+	import spark.components.supportClasses.Skin;
+	
 	[Event(name="buttonClick", type="fly.flex.events.ButtonClickEvent")]
 	
-	public class SettingsUI extends SettingsUIVisual
+	public class SettingsUI extends SkinnableComponent
 	{
 		private var _settings:Settings;
 		
+		[SkinPart(required="true")]
+		public var usernameTxt:TextInput;
+		
+		[SkinPart(required="true")]
+		public var passwordTxt:TextInput;
+		
+		[SkinPart(required="true")]
+		public var urlTxt:TextInput;
+		
+		[SkinPart(required="true")]
+		public var portTxt:TextInput;
+		
+		[SkinPart(required="true")]
+		public var okBtn:Button;
+		
+		[SkinPart(required="true")]
+		public var cancelBtn:Button;
+		
 		public function SettingsUI()
 		{
-			_settings = Settings.instance;
-		};
+		}
 		
-		override protected function childrenCreated():void
+		[Inject]
+		[SettingsUI]
+		public function set injectSkin(value:Skin):void
 		{
-			super.childrenCreated();
-			
-			_addEventListeners();
-			_setSettings();
-		};
+			setSkin(value);
+		}
 		
-		private function _setSettings():void
+		public function setSettings(settings:Settings):void
 		{
-			usernameTxt.text = _settings.username;
-			passwordTxt.text = _settings.password;
-			urlTxt.text = _settings.url;
-			portTxt.text = _settings.port ? _settings.port.toString() : null;
-		};
+			_settings = settings;
+		}
 		
-		private function _addEventListeners():void
+		override protected function partAdded(partName:String, instance:Object):void
 		{
-			//okBtn.setStyle("icon", getStyle("okIcon"));
-			//cancelBtn.setStyle("icons", getStyle("cancelIcon"));
+			super.partAdded(partName, instance);
 			
-			okBtn.addEventListener(MouseEvent.CLICK, _okClickHandler);
-			cancelBtn.addEventListener(MouseEvent.CLICK, _cancelClickHandler);
+			switch (instance)
+			{
+				case usernameTxt:
+					usernameTxt.addEventListener(Event.CHANGE, _textChangeHandler);
+					usernameTxt.text = _settings.username;
+					break;
+				case passwordTxt:
+					passwordTxt.addEventListener(Event.CHANGE, _textChangeHandler);
+					passwordTxt.text = _settings.password;
+					break;
+				case urlTxt:
+					urlTxt.addEventListener(Event.CHANGE, _textChangeHandler);
+					urlTxt.text = _settings.url;
+					break;
+				case portTxt:
+					portTxt.addEventListener(Event.CHANGE, _textChangeHandler);
+					portTxt.text = _settings.port ? _settings.port.toString() : null;
+					break;
+				case okBtn:
+					okBtn.addEventListener(MouseEvent.CLICK, _okClickHandler);
+					break;
+				case cancelBtn:
+					cancelBtn.addEventListener(MouseEvent.CLICK, _cancelClickHandler);
+					break;
+			}
+		}
+		
+		override protected function partRemoved(partName:String, instance:Object):void
+		{
+			switch (instance)
+			{
+				case usernameTxt:
+					usernameTxt.removeEventListener(Event.CHANGE, _textChangeHandler);
+					break;
+				case passwordTxt:
+					passwordTxt.removeEventListener(Event.CHANGE, _textChangeHandler);
+					break;
+				case urlTxt:
+					urlTxt.removeEventListener(Event.CHANGE, _textChangeHandler);
+					break;
+				case portTxt:
+					portTxt.removeEventListener(Event.CHANGE, _textChangeHandler);
+					break;
+				case okBtn:
+					okBtn.removeEventListener(MouseEvent.CLICK, _okClickHandler);
+					break;
+				case cancelBtn:
+					cancelBtn.addEventListener(MouseEvent.CLICK, _cancelClickHandler);
+					break;
+			}
 			
-			usernameTxt.addEventListener(Event.CHANGE, _textChangeHandler);
-			passwordTxt.addEventListener(Event.CHANGE, _textChangeHandler);
-			urlTxt.addEventListener(Event.CHANGE, _textChangeHandler);
-			portTxt.addEventListener(Event.CHANGE, _textChangeHandler);
-		};
+			super.partRemoved(partName, instance);
+		}
 		
 		private function _textChangeHandler(e:Event):void
 		{
 			okBtn.enabled = Boolean(urlTxt.text.length) && Boolean(portTxt.text.length);
-		};
+		}
 		
 		private function _saveValues():void
 		{
@@ -59,19 +124,19 @@ package fly.uTorrent.ui
 			_settings.password = passwordTxt.text;
 			_settings.url = urlTxt.text;
 			_settings.port = parseInt(portTxt.text);
-			Settings.save();
-		};
+			_settings.save();
+		}
 		
 		private function _okClickHandler(e:MouseEvent):void
 		{
 			_saveValues();
 			_dispatchEvent(ButtonClickEventKind.OK);
-		};
+		}
 		
 		private function _cancelClickHandler(e:MouseEvent):void
 		{
 			_dispatchEvent(ButtonClickEventKind.CANCEL);
-		};
+		}
 		
 		private function _dispatchEvent(kind_str:String):void
 		{
@@ -79,24 +144,6 @@ package fly.uTorrent.ui
 			buttonClickEvent.kind = kind_str;
 			
 			dispatchEvent(buttonClickEvent);
-		};
-		
-        static private var _initialized_bool:Boolean = _initialize();
-
-        static private function _initialize():Boolean 
-        {
-        	/*
-            if (!StyleManager.getStyleDeclaration("SettingsUI"))
-            {
-                var newStyleDeclaration:CSSStyleDeclaration = new CSSStyleDeclaration();
-                newStyleDeclaration.setStyle("okIcon", Icons.OK);
-                newStyleDeclaration.setStyle("cancelIcon", Icons.CANCEL);
-                
-                StyleManager.setStyleDeclaration("SettingsUI", newStyleDeclaration, true);
-            };
-            
-            */
-            return true;
-        };			
-	};
-};
+		}
+	}
+}
