@@ -1,8 +1,26 @@
 package fly.uTorrent
 {
+	import com.adobe.serialization.json.JSON;
+	
+	import flash.events.Event;
+	import flash.events.EventDispatcher;
+	import flash.events.IOErrorEvent;
+	import flash.events.TimerEvent;
+	import flash.filesystem.File;
+	import flash.filesystem.FileMode;
+	import flash.filesystem.FileStream;
+	import flash.net.URLRequest;
+	import flash.net.URLRequestHeader;
+	import flash.utils.ByteArray;
+	import flash.utils.Timer;
+	
+	import fly.net.SocketHTTPFileRequest;
+	import fly.net.SocketURLLoader;
+	import fly.uTorrent.decode.Torrent;
+	import fly.uTorrent.decode.TorrentInfo;
 	
 	
-	public class Commands
+	public class Commands extends EventDispatcher
 	{
 		static public const LIST:String = "list=1";
 		static public const TOKEN:String = "token.html";
@@ -15,78 +33,251 @@ package fly.uTorrent
 		static public const ACTION_PAUSE:String = "pause";
 		static public const ACTION_REMOVE:String = "remove";
 		
-		static private var _token:String;
+		private var _token:String;
+		private var _retrievingToken:Boolean;
 		
-		static public function setToken(token:String):void
+		private var _loader:SocketURLLoader;
+		private var _actionLoader:SocketURLLoader;
+		private var _uploadLoader:SocketURLLoader;
+		
+		private var _processingFile_bool:Boolean;
+		private var _filesToAddQueue_arr:Array;
+		
+		private var _timer:Timer;
+		
+		private var _settings:Settings;
+		
+		[Inject]
+		public function Commands(settings:Settings)
+		{
+			_settings = settings;
+			
+			_loader = new SocketURLLoader();
+			_loader.addEventListener(Event.COMPLETE, _loadCompleteHandler);
+			_loader.addEventListener(IOErrorEvent.IO_ERROR, _ioErrorHandler);
+			
+			_actionLoader = new SocketURLLoader();
+			_actionLoader.addEventListener(IOErrorEvent.IO_ERROR, _ioErrorHandler);
+			
+			_uploadLoader = new SocketURLLoader();
+			_uploadLoader.addEventListener(Event.COMPLETE, _uploadCompleteHandler);
+			_uploadLoader.addEventListener(IOErrorEvent.IO_ERROR, _ioErrorHandler);
+			
+			_timer = new Timer(1000);
+			_timer.addEventListener(TimerEvent.TIMER, _timerHandler);
+			
+			_filesToAddQueue_arr = [];
+		}
+		
+		private function _doAction(action:String, torrents:Array = null):void
+		{
+			var hashes:Array;
+			
+			if (torrents)
+			{
+				var torrent:Torrent;
+				
+				hashes = [];
+				var statusChanged:Boolean;
+				
+				for each (torrent in torrents)
+				{
+					hashes.push(torrent.hash);
+					
+					if (!statusChanged && action == ACTION_START && torrent.filteredStatus == TorrentInfo.STATUS_QUEUED)
+					{
+						action = ACTION_FORCE_START;
+					}
+				}
+			}
+			
+			var request:URLRequest = new URLRequest(_getActionURL(action, hashes));
+			request.requestHeaders.push(_settings.authenticationHeader);
+			
+			_actionLoader.load(request);
+		}
+		
+		private function _setToken(token:String):void
 		{
 			_token = "?token=" + token + "&";
 		}
 		
-		static public function getURL(command_str:String, ignoreToken:Boolean = false):String
+		private function _getURL(command:String):String
 		{
-			return Settings.instance.totalURL + _token + command_str;
-		};
-		
-		static public function getActionURL(action:Function, arguments_arr:Array = null, ignoreToken:Boolean = false):String
-		{
-			return Settings.instance.totalURL + _token + action.apply(Commands, arguments_arr);
-		};
-		
-		static public function get tokenURL():String
-		{
-			return Settings.instance.totalURL + TOKEN;
+			return _settings.totalURL + _token + command;
 		}
 		
-		static public function list():String
+		private function _getActionURL(action:String, hashes:Array = null):String
 		{
-			return LIST;
-		};
+			return _settings.totalURL + _token + _createAction(action, hashes);
+		}
 		
-		static private function _createAction(action_str:String, hashes_arr:Array = null):String
+		private function get _tokenURL():String
 		{
-			var s:String = ACTION + action_str;
+			return _settings.totalURL + TOKEN;
+		}
+		
+		private function _createAction(action:String, hashes:Array = null):String
+		{
+			var s:String = ACTION + action;
 			
-			if (hashes_arr)
+			if (hashes)
 			{
-				var hash_str:String;
+				var hash:String;
 				
-				for each (hash_str in hashes_arr)
+				for each (hash in hashes)
 				{
-					s += "&" + HASH + hash_str;
-				};
-			};
+					s += "&" + HASH + hash;
+				}
+			}
 			
 			return s;
-		};
+		}
 		
-		static public function addFile():String
+		private function _getToken():void
 		{
-			return _createAction(ACTION_ADD_FILE);
-		};
+			_retrievingToken = true;
+			
+			var request:URLRequest = new URLRequest(_tokenURL);
+			var authenticationHeader:URLRequestHeader = _settings.authenticationHeader;
+			if (authenticationHeader)
+			{
+				request.requestHeaders.push(authenticationHeader);		
+			}
+			
+			_loader.load(request);
+			
+		}
 		
-		static public function start(hash_str:String, ... rest_arr:Array):String
+		private function _ioErrorHandler(e:IOErrorEvent):void
 		{
-			return _createAction(ACTION_START, [hash_str].concat(rest_arr));			
-		};
+			trace("_ioErrorHandler: " + e);
+		}
 		
-		static public function forceStart(hash_str:String, ... rest_arr:Array):String
+		private function _loadCompleteHandler(e:Event):void
 		{
-			return _createAction(ACTION_FORCE_START, [hash_str].concat(rest_arr));			
-		};
+			if (_retrievingToken)
+			{
+				_retrievingToken = false;
+				
+				_setToken(new XML(_loader.data).div.text());
+				
+				startPolling();
+			} else
+			{
+				var data_str:String = _loader.data;
+				var data_obj:Object = JSON.decode(data_str);
+				
+				//TODO dispatch complete event
+			}
+		}
 		
-		static public function stop(hash_str:String, ... rest_arr:Array):String
+		private function _uploadCompleteHandler(e:Event):void
 		{
-			return _createAction(ACTION_STOP, [hash_str].concat(rest_arr));			
-		};
+			_processingFile_bool = false;
+			
+			if (_filesToAddQueue_arr.length)
+			{
+				_addNextFile();
+			}
+		}
 		
-		static public function pause(hash_str:String, ... rest_arr:Array):String
+		private function _addNextFile():void
 		{
-			return _createAction(ACTION_PAUSE, [hash_str].concat(rest_arr));			
-		};
+			var file:File = File(_filesToAddQueue_arr.shift());
+			
+			if (file.nativePath.substr(-8) == ".torrent")
+			{
+				_addFile(file);
+			} else if (_filesToAddQueue_arr.length)
+			{
+				_addNextFile();
+			}
+		}
 		
-		static public function remove(hash_str:String, ... rest_arr:Array):String
+		public function startPolling():void
 		{
-			return _createAction(ACTION_REMOVE, [hash_str].concat(rest_arr));
-		};
-	};
-};
+			_timer.start();
+			list();
+		}
+		
+		public function stopPolling():void
+		{
+			_timer.stop();
+		}
+		
+		private function _timerHandler(e:TimerEvent):void
+		{
+			list();
+		}
+		
+		public function list():void
+		{
+			var request:URLRequest = new URLRequest(_getURL(LIST));
+			var authenticationHeader:URLRequestHeader = _settings.authenticationHeader;
+			if (authenticationHeader)
+			{
+				request.requestHeaders.push(authenticationHeader);		
+			}
+			
+			_loader.load(request);
+		}
+		
+		public function addFile(file:File):void
+		{
+			_filesToAddQueue_arr.push(file);
+			
+			if (!_processingFile_bool)
+			{
+				_addNextFile();
+			}			
+		}
+		
+		private function _addFile(file:File):void
+		{
+			_processingFile_bool = true;
+			
+			var fileContent:ByteArray = new ByteArray();
+			var fileStream:FileStream = new FileStream();
+			fileStream.open(file, FileMode.READ);
+			fileStream.readBytes(fileContent);
+			fileStream.close();
+			
+			var request:SocketHTTPFileRequest = new SocketHTTPFileRequest(_getActionURL(ACTION_ADD_FILE));
+			request.fileName = file.name;
+			request.fileContent = fileContent;
+			request.dataField = "torrent_file";
+			request.requestHeaders.push(_settings.authenticationHeader);
+			
+			_uploadLoader.load(request);			
+
+			
+			return _doAction(ACTION_ADD_FILE);
+		}
+		
+		public function start(torrents:Array):void
+		{
+			_doAction(ACTION_START, torrents);
+		}
+		
+		public function forceStart(torrents:Array):void
+		{
+			_doAction(ACTION_FORCE_START, torrents);			
+		}
+		
+		public function stop(torrents:Array):void
+		{
+			_doAction(ACTION_STOP, torrents);			
+		}
+		
+		public function pause(torrents:Array):void
+		{
+			_doAction(ACTION_PAUSE, torrents);			
+		}
+		
+		public function remove(torrents:Array):void
+		{
+			_doAction(ACTION_REMOVE, torrents);		
+		}
+	}
+}
