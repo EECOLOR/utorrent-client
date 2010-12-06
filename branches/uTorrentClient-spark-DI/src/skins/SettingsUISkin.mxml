@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		xmlns:s="library://ns.adobe.com/flex/spark" 
-		xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:assets="fly.uTorrent.ui.assets.*">
+		xmlns:assets="fly.uTorrent.ui.assets.*">
 	<s:layout>
 		<s:VerticalLayout/>
 	</s:layout>
@@ -14,24 +14,20 @@
 		<s:Label text="Password:" fontWeight="bold" width="{portLabelTxt.width}" />
 		<s:TextInput id="passwordTxt" displayAsPassword="true" width="100%" />
 	</s:HGroup>
-	<mx:HRule width="100%" />
+	<assets:HRule width="100%" />
 	<s:HGroup width="100%" verticalAlign="middle">
 		<s:Label text="WebUI URL:" fontWeight="bold" width="{portLabelTxt.width}" />
 		<s:TextInput id="urlTxt" width="100%" />
 	</s:HGroup>
-	<s:HGroup width="100%">
-		<mx:Spacer width="100%" />
-		<mx:Label styleName="settingsURLExplaination" htmlText="http://&lt;u&gt;&lt;b&gt;WebUI_URL&lt;/b&gt;&lt;/u&gt;:####" />
-	</s:HGroup>
+	<s:Label right="0" styleName="settingsURLExplaination" text="http://\{WebUI URL\}:\{port\}" />
 	<s:HGroup width="100%" verticalAlign="middle">
 		<s:Label id="portLabelTxt" text="WebUI Port:" fontWeight="bold" />
 		<s:TextInput id="portTxt" width="100%" />
 	</s:HGroup>
-	<mx:HRule width="100%" />
-	<s:HGroup width="100%" verticalAlign="middle">
-		<mx:Spacer width="100%" />
-		<assets:HandButton id="okBtn" toolTip="Ok" />
-		<assets:HandButton id="cancelBtn" toolTip="Cancel" />
+	<assets:HRule width="100%" />
+	<s:HGroup right="0" verticalAlign="middle">
+		<assets:OkButton id="okBtn" />
+		<assets:CancelButton id="cancelBtn" />
 	</s:HGroup>
 
 </s:Skin>

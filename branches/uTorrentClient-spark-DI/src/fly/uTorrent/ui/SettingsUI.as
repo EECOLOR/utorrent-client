@@ -44,15 +44,11 @@ package fly.uTorrent.ui
 		}
 		
 		[Inject]
-		[SettingsUI]
-		public function set injectSkin(value:Skin):void
-		{
-			setSkin(value);
-		}
-		
-		public function setSettings(settings:Settings):void
+		[Arguments(1="[SettingsUI]")]
+		public function setSettings(settings:Settings, skin:Skin):void
 		{
 			_settings = settings;
+			setSkin(skin);
 		}
 		
 		override protected function partAdded(partName:String, instance:Object):void
