@@ -1,0 +1,1 @@
+This client allows you to remotely connect to the admin API of uTorrent. Torrents managed by the uTorrent application can be controlled from a remote machine.
